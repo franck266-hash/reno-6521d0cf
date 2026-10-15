@@ -4,8 +4,8 @@
 header{position:sticky;top:0;z-index:5;background:#fff;color:#202124;border-bottom:1px solid #dadce0;padding:10px 12px}
 h1{font-size:19px;margin:0 0 6px}.bar{height:12px;background:#e8eaed;border-radius:6px;overflow:hidden}.bar i{display:block;height:100%;background:linear-gradient(90deg,#4285f4,#ea4335,#fbbc04,#34a853)}
 .stats{display:flex;justify-content:space-between;font-size:15px;margin-top:4px}
-#next{margin:12px;padding:14px;background:#fef7e0;border:2px solid #fbbc04;border-radius:14px}
-#next b{display:block;font-size:14px;text-transform:uppercase;color:#b06000}#next .t{font-size:19px;font-weight:600;margin:4px 0 10px}
+#next{margin:12px;padding:14px;background:#e8f0fe;border:1px solid #aecbfa;border-radius:14px}
+#next b{display:block;font-size:14px;text-transform:uppercase;color:#1967d2}#next .t{font-size:19px;font-weight:600;margin:4px 0 10px}
 nav{display:flex;gap:8px;margin:0 12px}nav button{flex:1}
 button{min-height:48px;font:inherit;border:0;border-radius:24px;padding:0 14px;background:#e8f0fe;color:#1967d2;color:#202124;cursor:pointer}
 button.p{background:#1a73e8;color:#fff}button.on{background:#1a73e8;color:#fff}
@@ -16,7 +16,7 @@ button.p{background:#1a73e8;color:#fff}button.on{background:#1a73e8;color:#fff}
 .sub{border-top:1px solid #eef1f6;padding-left:22px}.sub .num{color:#7a8396;font-size:14px}
 .det{padding:0 12px 12px;display:grid;grid-template-columns:1fr 1fr;gap:8px;font-size:14px}
 .det label{display:flex;flex-direction:column;gap:2px}.det .w{grid-column:1/3}
-input[type=date],input[type=number],textarea{font:inherit;min-height:44px;padding:6px;border:1px solid #c4cbd8;border-radius:10px;width:100%}
+input[type=text],input[type=date],input[type=number],textarea{font:inherit;min-height:44px;padding:6px;border:1px solid #c4cbd8;border-radius:10px;width:100%}
 textarea{min-height:60px}.info{font-size:14px;color:#55607a}
 .tg{min-width:48px;padding:0}.hide{display:none}
 #gantt{overflow-x:auto;margin:12px;background:#fff;border-radius:14px}
@@ -54,7 +54,7 @@ function stats(){const a=all(),d=a.filter(r=>r.done).length,p=Math.round(d/a.len
  const t=a.reduce((s,r)=>s+(parseFloat(r.budget)||0),0);$('#tot').textContent='Budget : '+money(t);
  let nx=null;for(const m of S){if(m.done)continue;nx=m.subs.find(s=>!s.done)||m;break}
  $('#next').innerHTML=nx?'<b>Prochaine action</b><div class="t">'+esc(nx.n)+' – '+esc(nx.t)+'</div><button class="p" data-a="ck" data-n="'+nx.n+'">✓ C\'est fait</button>':'<b>Bravo!</b><div class="t">Tout est fait 🎉</div>'}
-function det(r,main){return '<div class="det hide" id="d'+r.n+'">'+(main?'<div class="w info">Qui : '+esc(r.qui)+(r.budgetTxt&&!r.budget?' · Budget '+esc(r.budgetTxt):'')+'</div>':'')+
+function det(r,main){return '<div class="det hide" id="d'+r.n+'">'+(main?'<label class="w">Qui<input type="text" data-f="qui" data-n="'+r.n+'" value="'+esc(r.qui)+'"></label><div class="w info">'+(r.budgetTxt&&!r.budget?' · Budget '+esc(r.budgetTxt):'')+'</div>':'')+
  '<label>Début estimé<input type="date" data-f="estStart" data-n="'+r.n+'" value="'+(r.estStart||'')+'"></label><label>Fin estimée<input type="date" data-f="estEnd" data-n="'+r.n+'" value="'+(r.estEnd||'')+'"></label>'+
  '<label class="w">Durée estimée<span class="info" id="e'+r.n+'" style="min-height:44px;display:flex;align-items:center">'+(dur(r,1)||'—')+'</span></label>'+
  '<label>Début<input type="date" data-f="start" data-n="'+r.n+'" value="'+r.start+'"></label><label>Fin<input type="date" data-f="end" data-n="'+r.n+'" value="'+r.end+'"></label>'+
@@ -62,9 +62,9 @@ function det(r,main){return '<div class="det hide" id="d'+r.n+'">'+(main?'<div c
  '<label class="w">Notes<textarea data-f="note" data-n="'+r.n+'">'+esc(r.note)+'</textarea></label></div>'}
 function row(r,main){return '<div class="row '+(main?'main':'sub')+(r.done?' done':'')+'"><input type="checkbox" class="ck" data-a="ck" data-n="'+r.n+'" '+(r.done?'checked':'')+' aria-label="Fait">'+
  '<div class="tt"><span class="num">'+r.n+'</span> '+esc(r.t)+'</div><button class="tg" data-a="det" data-n="'+r.n+'" aria-label="Détails">✎</button>'+
- (!main?'<button class="tg" data-a="del" data-n="'+r.n+'" aria-label="Supprimer" style="background:#fce8e6;color:#c5221f">🗑</button>':'')+(main&&r.subs.length?'<button class="tg" data-a="op" data-n="'+r.n+'">'+(open[r.n]?'▲':'▼')+'</button>':'')+'</div>'+det(r,main)}
+ '<button class="tg" data-a="ren" data-n="'+r.n+'" aria-label="Modifier le nom">✏️</button>'+('<button class="tg" data-a="del" data-n="'+r.n+'" aria-label="Supprimer" style="background:#fce8e6;color:#c5221f">🗑</button>')+(main&&r.subs.length?'<button class="tg" data-a="op" data-n="'+r.n+'">'+(open[r.n]?'▲':'▼')+'</button>':'')+'</div>'+det(r,main)}
 function render(){const shown=[...document.querySelectorAll('.det:not(.hide)')].map(e=>e.id);
- $('#list').innerHTML=S.map(m=>'<div class="card">'+row(m,1)+'<div class="'+(open[m.n]?'':'hide')+'">'+m.subs.map(s=>row(s,0)).join('')+'<div class="row sub"><button data-a="add" data-n="'+m.n+'">+ Ajouter une sous-tâche</button></div></div></div>').join('');
+ $('#list').innerHTML=S.map(m=>'<div class="card">'+row(m,1)+'<div class="'+(open[m.n]?'':'hide')+'">'+m.subs.map(s=>row(s,0)).join('')+'<div class="row sub"><button data-a="add" data-n="'+m.n+'">+ Ajouter une sous-tâche</button></div></div></div>').join('')+'<div class="card"><div class="row"><button class="p" style="flex:1" data-a="addm">+ Ajouter une étape</button></div></div>';
  shown.forEach(id=>{const e=document.getElementById(id);e&&e.classList.remove('hide')});stats();gantt()}
 function gantt(){const t0=D('2026-09-28'),t1=D('2027-09-30'),W=[];for(let d=new Date(t0);d<=t1;d.setDate(d.getDate()+7))W.push(new Date(d));
  let h='<table><tr><th class="n">Étape</th>'+W.map(w=>'<th>'+w.getDate()+'/'+(w.getMonth()+1)+'</th>').join('')+'</tr>';
@@ -75,6 +75,9 @@ function gantt(){const t0=D('2026-09-28'),t1=D('2027-09-30'),W=[];for(let d=new 
 document.addEventListener('click',e=>{const t=e.target.closest('[data-a]');if(!t)return;const n=t.dataset.n,a=t.dataset.a;
  if(a=='ck'){snap();const r=find(n);r.done=!r.done;save();render()}
  if(a=='add'){const m=S.find(x=>x.n==n),t=prompt('Texte de la nouvelle sous-tâche :');if(t&&t.trim()){snap();const k=Math.max(0,...m.subs.map(x=>parseInt(String(x.n).split('.')[1])||0))+1;m.subs.push({n:m.n+'.'+k,t:t.trim(),done:false,start:'',end:'',estStart:'',estEnd:'',budget:'',note:''});open[m.n]=true;save();render()}}
+ if(a=='addm'){const t=prompt('Nom de la nouvelle étape :');if(t&&t.trim()){snap();const k=Math.max(0,...S.map(x=>parseInt(x.n)||0))+1;S.push({n:String(k),t:t.trim(),qui:'',est:'',budgetTxt:'',budget:'',done:false,start:'',end:'',estStart:'',estEnd:'',note:'',subs:[]});save();render()}}
+ if(a=='ren'){const r=find(n),t=prompt('Nouveau nom :',r.t);if(t&&t.trim()&&t.trim()!==r.t){snap();r.t=t.trim();save();render()}}
+ if(a=='del'&&S.some(x=>x.n==n)){if(confirm("Es-tu sûre de vouloir supprimer l'étape "+n+" ? Ça va supprimer l'étape ET toutes ses sous-étapes.")){snap();S=S.filter(x=>x.n!=n);save();render()}return}
  if(a=='del'){const m=S.find(x=>x.subs.some(y=>y.n==n));if(m&&confirm('Supprimer la sous-tâche '+n+' ? (Annuler possible avec ↶)')){snap();m.subs=m.subs.filter(y=>y.n!=n);save();render()}}
  if(a=='det')document.getElementById('d'+n).classList.toggle('hide');
  if(a=='op'){open[n]=!open[n];localStorage.setItem(KEY+'.open',JSON.stringify(open));render()}});
